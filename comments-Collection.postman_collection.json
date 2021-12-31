@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "4ef125b1-af4a-40e1-92d0-5a61c67328c9",
+		"name": "comments-Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET-comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema = {\r",
+							"\"type\": \"array\",\r",
+							"\"items\":\r",
+							"{\"type\": \"object\",\r",
+							"\"properties\": {\r",
+							"        \"postId\": { \"type\" : \"integer\" },\r",
+							"        \"id\": { \"type\" : \"integer\" },\r",
+							"        \"name\": { \"type\" : \"string\" },\r",
+							"        \"email\": { \"type\" : \"string\" },\r",
+							"        \"body\":  { \"type\" : \"string\"}\r",
+							"    },\r",
+							"}};\r",
+							"const qqty ={\"type\": \"array\",\r",
+							"\"minItems\": 500,\r",
+							"\"maxItems\": 500,\r",
+							"\"items\":\r",
+							"{\"type\": \"object\",\r",
+							"\"properties\": {\r",
+							"        \"postId\": { \"type\" : \"integer\" },\r",
+							"        \"id\": { \"type\" : \"integer\" },\r",
+							"        \"name\": { \"type\" : \"string\" },\r",
+							"        \"email\": { \"type\" : \"string\" },\r",
+							"        \"body\":  { \"type\" : \"string\"}\r",
+							"    },\r",
+							"}};\r",
+							"\r",
+							"const required_attr = {\r",
+							"\"type\": \"array\",\r",
+							"\"items\":\r",
+							"{\"type\": \"object\",\r",
+							"\"properties\": {\r",
+							"        \"postId\": { \"type\" : \"integer\" },\r",
+							"        \"id\": { \"type\" : \"integer\" },\r",
+							"        \"name\": { \"type\" : \"string\" },\r",
+							"        \"email\": { \"type\" : \"string\" },\r",
+							"        \"body\":  { \"type\" : \"string\"}\r",
+							"    },\r",
+							"\"required\": [\"postId\",\"id\",\"name\",\"email\",\"body\"],\r",
+							"}};\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code name is 'OK'\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate json schema of response body\", () => {\r",
+							"pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate quantity of response objects\", () => {\r",
+							"pm.response.to.have.jsonSchema(qqty);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate required attributes of response objects\", () => {\r",
+							"pm.response.to.have.jsonSchema(required_attr);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header type is an application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{comments}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{comments}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-specific-comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validar que trae el objeto que le especficiamos\", () => {\r",
+							"  pm.expect(jsonData.email).to.include(\"Eliseo@gardner.biz\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"email\", \"2\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{comments}}/{{id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{comments}}",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-comments-not-found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Status code name has string 'Not Found'\", function () {\r",
+							"    pm.response.to.have.status(\"Not Found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{comment}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{comment}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

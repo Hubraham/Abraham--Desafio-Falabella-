@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "4c9137d2-bba8-47c1-aa53-db99bf67825a",
+		"name": "Post-Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET-posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema = {\r",
+							"\"type\": \"array\",\r",
+							"\"items\":\r",
+							"{\"type\": \"object\",\r",
+							"\"properties\": {\r",
+							"        \"userId\": { \"type\" : \"integer\" },\r",
+							"        \"id\": { \"type\" : \"integer\" },\r",
+							"        \"title\": { \"type\" : \"string\" },\r",
+							"        \"body\": { \"type\" : \"string\" }\r",
+							"    },\r",
+							"}};\r",
+							"const qqty ={\"type\": \"array\",\r",
+							"\"minItems\": 100,\r",
+							"\"maxItems\": 100,\r",
+							"\"items\":\r",
+							"{\"type\": \"object\",\r",
+							"\"properties\": {\r",
+							"        \"userId\": { \"type\" : \"integer\" },\r",
+							"        \"id\": { \"type\" : \"integer\" },\r",
+							"        \"title\": { \"type\" : \"string\" },\r",
+							"        \"body\": { \"type\" : \"string\" }\r",
+							"    },\r",
+							"}};\r",
+							"\r",
+							"const required_attr = {\r",
+							"\"type\": \"array\",\r",
+							"\"items\":\r",
+							"{\"type\": \"object\",\r",
+							"\"properties\": {\r",
+							"        \"userId\": { \"type\" : \"integer\" },\r",
+							"        \"id\": { \"type\" : \"integer\" },\r",
+							"        \"title\": { \"type\" : \"string\" },\r",
+							"        \"body\": { \"type\" : \"string\" }\r",
+							"    },\r",
+							"\"required\": [\"userId\",\"id\",\"title\",\"body\"],\r",
+							"}};\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code name is 'OK'\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate json schema of response body\", () => {\r",
+							"pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate quantity of response objects\", () => {\r",
+							"pm.response.to.have.jsonSchema(qqty);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate required attributes of response objects\", () => {\r",
+							"pm.response.to.have.jsonSchema(required_attr);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header type is an application/json\", () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{posts}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{posts}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-specific-post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Validate content of specific post by an id\", () => {\r",
+							"    pm.expect(jsonData.id).to.be.equal(parseInt(pm.environment.get(\"id\")))\r",
+							"    pm.expect(jsonData.title).to.be.equal(\"sunt aut facere repellat provident occaecati excepturi optio reprehenderit\");\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"id\", \"1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{posts}}/{{id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{posts}}",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET-posts-not-found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Status code name has string 'Not Found'\", function () {\r",
+							"    pm.response.to.have.status(\"Not Found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/{{post}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{post}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
